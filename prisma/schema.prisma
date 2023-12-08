@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+//  TODO AUTHORITY MODELS
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum Complete {
+  YES
+  NO
+}
+
+model user {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  user_id    String    @unique
+  name       String
+  number     String    @unique
+  password   String
+  email      String?
+  image      String?
+  role       UserRole? @default(USER)
+  isComplete Complete? @default(NO)
+  status     Status?   @default(ACTIVE)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+enum type {
+  Clothing
+  Electronics
+  Grocery
+  Restaurant
+  Other
+}
+
+enum isMulti {
+  YES
+  NO
+}
+
+model organization {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  org_id     String   @unique @default(cuid())
+  logo       String?
+  name       String
+  owner_name String?
+  number     String?
+  email      String?
+  user_id    String   @unique
+  type       type
+  isMulti    isMulti  @default(NO)
+  location   String?
+  status     Status?  @default(ACTIVE)
+  date       DateTime @default(now())
+}
+
+
+
+//  TODO ACTIVITY MODEL
+
+model activity {
+  id   String   @id @default(auto()) @map("_id") @db.ObjectId
+  // id   String   @id @map("_id")
+  type String
+  user String
+  des  String
+  date DateTime @default(now())
+}
